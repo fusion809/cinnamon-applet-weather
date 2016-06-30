@@ -12,14 +12,19 @@ depends=('cinnamon')
 makedepends=('git')
 
 # Use ccprog's fix for the yahoo api format
-source=("${url}/archive/v${pkgver}.tar.gz")
+source=("git+${url}.git#tag=v${pkgver}")
 
 sha256sums=('SKIP')
 _appletname='weather@mockturtl'
 _appletdir="usr/share/cinnamon/applets/$_appletname"
 
+pkgver() {
+  cd $srcdir/${_pkgname}
+  git describe --tags `git rev-list --tags --max-count=1` | sed 's/v//g'
+}
+
 package() {
-  cd "${_pkgname}-${pkgver}"
+  cd "${_pkgname}"
   install -dm755 "$pkgdir/$_appletdir"
   find * -type f -exec install -Dm644 {} $pkgdir/$_appletdir/ \;
 }
